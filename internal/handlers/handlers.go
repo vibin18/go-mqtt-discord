@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 var config *repos.Repository
@@ -40,7 +41,8 @@ var MessagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 		label := events.Before.Label
 		camera := events.Before.Camera
 		eventStartime = events.Before.StartTime
-		startTime := int64(eventStartime)
+		startTime := time.Unix(int64(eventStartime), 0)
+		contentTime := fmt.Sprintf("%v", startTime.Format(time.RFC1123Z))
 
 		snapShotURL.WriteString(config.Params.FrigateServer)
 		snapShotURL.WriteString("/api/")
@@ -66,7 +68,7 @@ var MessagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 		files = append(files, &NewFile)
 
 		mc := discordgo.MessageSend{
-			Content: fmt.Sprintf("New %v detetced on %v at %v", label, camera, startTime),
+			Content: fmt.Sprintf("A %v detetced on %v at %v", label, camera, contentTime),
 			Files:   files,
 		}
 
