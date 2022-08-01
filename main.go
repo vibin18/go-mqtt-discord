@@ -5,14 +5,14 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/jessevdk/go-flags"
 	"github.com/vibin18/go-mqtt-discord/internal/handlers"
-	"github.com/vibin18/go-mqtt-discord/internal/ops"
+	"github.com/vibin18/go-mqtt-discord/internal/opts"
 	"github.com/vibin18/go-mqtt-discord/internal/repos"
 	"os"
 )
 
 var (
 	argparser *flags.Parser
-	arg       ops.Params
+	arg       opts.Params
 )
 
 func initArgparser() {
@@ -36,20 +36,15 @@ func main() {
 	initArgparser()
 
 	var params repos.Repository
-
 	params.Params = &arg
-
 	handlers.NewConfig(&params)
 
-	opts := mqtt.NewClientOptions()
-	opts.AddBroker(fmt.Sprintf("tcp://%v", arg.FrigateMqtt))
-	opts.SetClientID("go_mqtt_client")
-	//opts.SetUsername("emqx")
-	//opts.SetPassword("public")
-	//opts.SetDefaultPublishHandler(messagePubHandler)
-	opts.OnConnect = handlers.ConnectHandler
-	opts.OnConnectionLost = handlers.ConnectLostHandler
-	client := mqtt.NewClient(opts)
+	mqtt_client := mqtt.NewClientOptions()
+	mqtt_client.AddBroker(fmt.Sprintf("tcp://%v", arg.FrigateMqtt))
+	mqtt_client.SetClientID("go_mqtt_client")
+	mqtt_client.OnConnect = handlers.ConnectHandler
+	mqtt_client.OnConnectionLost = handlers.ConnectLostHandler
+	client := mqtt.NewClient(mqtt_client)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}

@@ -1,7 +1,7 @@
 package repos
 
-import "github.com/vibin18/go-mqtt-discord/internal/ops"
+import "github.com/vibin18/go-mqtt-discord/internal/opts"
 
 type Repository struct {
-	Params *ops.Params
+	Params *opts.Params
 }

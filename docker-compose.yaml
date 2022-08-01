@@ -1,0 +1,13 @@
+version: '3'
+services:
+  go-mqtt-discord:
+    image: vibin/go-mqtt-discord:latest
+    container_name: go-mqtt-discord
+    command: /go-mqtt-discord
+    restart: always
+    environment:
+      - FRIGATE_SERVER=${FRIGATE_SERVER}
+      - FRIGATE_MQTT_SERVER=${FRIGATE_MQTT_SERVER}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_CHANNEL_ID=${DISCORD_CHANNEL_ID}
+      - SNAPSHOT_PIXEL=${SNAPSHOT_PIXEL}
