@@ -69,7 +69,7 @@ var MessagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 		files = append(files, &NewFile)
 
 		mc := discordgo.MessageSend{
-			Content: fmt.Sprintf("A %v detetced on %v at %v", label, camera, contentTime),
+			Content: fmt.Sprintf("A %v detected on %v at %v", label, camera, contentTime),
 			Files:   files,
 		}
 
