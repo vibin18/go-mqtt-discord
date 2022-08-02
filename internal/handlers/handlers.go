@@ -42,7 +42,8 @@ var MessagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 		camera := events.Before.Camera
 		eventStartime = events.Before.StartTime
 		startTime := time.Unix(int64(eventStartime), 0)
-		contentTime := fmt.Sprintf("%v", startTime.Format(time.RFC1123Z))
+		loc, _ := time.LoadLocation(config.Params.TimeZone)
+		contentTime := fmt.Sprintf("%v", startTime.In(loc).Format(time.RFC1123))
 
 		snapShotURL.WriteString(config.Params.FrigateServer)
 		snapShotURL.WriteString("/api/")

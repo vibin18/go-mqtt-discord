@@ -15,7 +15,9 @@ ENV FRIGATE_SERVER="http://192.168.68.126:5000" \
     FRIGATE_MQTT_SERVER="192.168.68.126:1883" \
     DISCORD_TOKEN="YOUR_DISCORD_TOKEN" \
     DISCORD_CHANNEL_ID="YOUR_DISCORD_CHANNEL_ID" \
-    SNAPSHOT_PIXEL="400"
+    SNAPSHOT_PIXEL="400" \
+    TIME_ZONE="Asia/Kolkata"
+
 
 COPY --from=build /go/src/github.com/vibin18/go-mqtt-discord/go-mqtt-discord /
 USER 1000:1000

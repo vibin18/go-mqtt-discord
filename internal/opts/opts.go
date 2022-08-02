@@ -11,6 +11,7 @@ type Params struct {
 	DiscordToken     string `           long:"token"      env:"DISCORD_TOKEN"  description:"Discord Webhook token"`
 	DiscordChannelID string `           long:"channel"      env:"DISCORD_CHANNEL_ID"  description:"Discord Channel ID"`
 	SnapshotQuality  string `           long:"pixel"      env:"SNAPSHOT_PIXEL"  description:"Snapshot image quality" default:"300"`
+	TimeZone         string `           long:"timezone"      env:"TIME_ZONE"  description:"Timezone as per timezone db" default:"Asia/Kolkata"`
 }
 
 func (o *Params) GetJson() []byte {
