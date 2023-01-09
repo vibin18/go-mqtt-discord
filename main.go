@@ -8,6 +8,7 @@ import (
 	"github.com/vibin18/go-mqtt-discord/internal/opts"
 	"github.com/vibin18/go-mqtt-discord/internal/repos"
 	"os"
+	"time"
 )
 
 var (
@@ -40,6 +41,16 @@ func main() {
 	handlers.NewConfig(&params)
 
 	mqtt_client := mqtt.NewClientOptions()
+	mqttClient := mqtt.NewClientOptions()
+	mqttClient.ConnectTimeout = 30 * time.Second
+	mqttClient.ConnectRetry = true
+	mqttClient.AutoReconnect = true
+	mqttClient.KeepAlive = 25
+	mqttClient.CleanSession = true
+	mqttClient.ConnectRetryInterval = 20 * time.Second
+	mqttClient.PingTimeout = 30 * time.Second
+	mqttClient.MaxReconnectInterval = 30 * time.Second
+	mqttClient.ResumeSubs = true
 	mqtt_client.AddBroker(fmt.Sprintf("tcp://%v", arg.FrigateMqtt))
 	mqtt_client.SetClientID("go_mqtt_client")
 	mqtt_client.OnConnect = handlers.ConnectHandler
