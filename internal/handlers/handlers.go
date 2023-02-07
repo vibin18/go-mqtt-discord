@@ -88,10 +88,27 @@ var MessagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Me
 
 var ConnectHandler mqtt.OnConnectHandler = func(client mqtt.Client) {
 	log.Println("connected to mqtt")
+	log.Println("Subscribing to frigate/events")
+	Sub(client, "frigate/events")
 }
 
 var ConnectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err error) {
 	log.Printf("connection lost to mqtt: %v\n", err)
+	timeout := 5
+	ok := false
+	for !ok {
+		if timeout <= 0 {
+			log.Println("Connection not ready after timeout, exiting..")
+			return
+		}
+		ok = client.IsConnectionOpen()
+		if !ok {
+			log.Println("Connection not ready")
+			time.Sleep(1 * time.Second)
+			timeout--
+		}
+		log.Println("Connected..")
+	}
 }
 
 func Sub(client mqtt.Client, topic string) {

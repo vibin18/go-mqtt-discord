@@ -7,6 +7,7 @@ import (
 	"github.com/vibin18/go-mqtt-discord/internal/handlers"
 	"github.com/vibin18/go-mqtt-discord/internal/opts"
 	"github.com/vibin18/go-mqtt-discord/internal/repos"
+	"log"
 	"os"
 	"time"
 )
@@ -40,7 +41,6 @@ func main() {
 	params.Params = &arg
 	handlers.NewConfig(&params)
 
-	mqtt_client := mqtt.NewClientOptions()
 	mqttClient := mqtt.NewClientOptions()
 	mqttClient.ConnectTimeout = 30 * time.Second
 	mqttClient.ConnectRetry = true
@@ -51,19 +51,38 @@ func main() {
 	mqttClient.PingTimeout = 30 * time.Second
 	mqttClient.MaxReconnectInterval = 30 * time.Second
 	mqttClient.ResumeSubs = true
-	mqtt_client.AddBroker(fmt.Sprintf("tcp://%v", arg.FrigateMqtt))
-	mqtt_client.SetClientID("go_mqtt_client")
-	mqtt_client.OnConnect = handlers.ConnectHandler
-	mqtt_client.OnConnectionLost = handlers.ConnectLostHandler
-	client := mqtt.NewClient(mqtt_client)
+	mqttClient.AddBroker(fmt.Sprintf("tcp://%v", arg.FrigateMqtt))
+	mqttClient.SetClientID("go_mqtt_client")
+	mqttClient.OnConnect = handlers.ConnectHandler
+	mqttClient.OnConnectionLost = handlers.ConnectLostHandler
+	client := mqtt.NewClient(mqttClient)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
 
 	go func() {
+		timeout := 5
+
+		ok := false
+		for !ok {
+			if timeout <= 0 {
+				log.Println("Connection not ready after timeout, exiting..")
+				return
+			}
+			ok = client.IsConnectionOpen()
+			if !ok {
+				log.Println("Connection not ready")
+				time.Sleep(1 * time.Second)
+				timeout--
+			}
+			log.Println("Connected..")
+
+		}
+
 		handlers.Sub(client, "frigate/events")
 
 	}()
+
 	select {}
 	client.Disconnect(250)
 }
