@@ -61,7 +61,7 @@ func main() {
 	}
 
 	go func() {
-		timeout := 5
+		timeout := 10
 
 		ok := false
 		for !ok {
@@ -72,10 +72,10 @@ func main() {
 			ok = client.IsConnectionOpen()
 			if !ok {
 				log.Println("Connection not ready")
-				time.Sleep(1 * time.Second)
+				time.Sleep(30 * time.Second)
 				timeout--
 			}
-			log.Println("Connected..")
+			log.Println("Connection retrying..")
 
 		}
 
